@@ -2,3 +2,5 @@
 .DS_Store
 /upload/
 
+# Dependency directories
+node_modules/
