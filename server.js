@@ -10,6 +10,13 @@ var jsonParser = bodyParser.json();
 var urlencodedParser = bodyParser.urlencoded({
   extended: false
 });
+// 模版引擎
+app.set('view engine', 'ejs')
+
+app.get('/form2/:name', function (req, res) {
+  var person = { age: 29, job: 'TT', hobbies: ['eating', 'coding', 'finshing']}
+  res.render('form', { person: person })
+})
 
 // 路由
 var indexRouter = require('./routes/index')
