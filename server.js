@@ -11,11 +11,20 @@ var urlencodedParser = bodyParser.urlencoded({
   extended: false
 });
 
+// 路由
+var indexRouter = require('./routes/index')
+var userRouter = require('./routes/user')
+
+app.use('/', indexRouter)
+app.use('/user', userRouter)
+
+
+
 // 中间件函数
 app.use(express.static("public"));
 
 // 没有路径的中间件函数, 每次收到请求时执行该函数。
-app.get("/first", function(req, res, next) {
+app.get("/first", function (req, res, next) {
   console.log("first middleware");
   next();
   // 没有响应请求，需要将控制权传递给下一个中间件函数
@@ -23,7 +32,7 @@ app.get("/first", function(req, res, next) {
 });
 
 // 安装在某个路径的中间件函数
-app.use("/second", function(req, res, next) {
+app.use("/second", function (req, res, next) {
   console.log("second middleware");
   res.send("ok");
 });
@@ -35,7 +44,7 @@ app.use("/second", function(req, res, next) {
 // });
 
 // 上传文件
-var createFolder = function(folder) {
+var createFolder = function (folder) {
   try {
     fs.accessSync(folder);
   } catch (error) {
@@ -47,10 +56,10 @@ var uploadFolder = "./upload/";
 createFolder(uploadFolder);
 
 var storage = multer.diskStorage({
-  destination: function(req, file, cb) {
+  destination: function (req, file, cb) {
     cb(null, uploadFolder);
   },
-  filename: function(req, file, cb) {
+  filename: function (req, file, cb) {
     cb(null, file.originalname);
   }
 });
@@ -59,7 +68,7 @@ var upload = multer({
   storage: storage
 });
 
-app.post("/upload", upload.single("logo"), function(req, res) {
+app.post("/upload", upload.single("logo"), function (req, res) {
   console.dir(req.file);
   res.send({
     ret_code: 0
@@ -67,7 +76,7 @@ app.post("/upload", upload.single("logo"), function(req, res) {
 });
 
 // 访问静态页面
-app.get("/form", function(req, res) {
+app.get("/form", function (req, res) {
   var form = fs.readFileSync("./form.html", {
     encoding: "utf8"
   });
@@ -75,24 +84,24 @@ app.get("/form", function(req, res) {
 });
 
 // post请求
-app.post("/login", urlencodedParser, function(req, res) {
+app.post("/login", urlencodedParser, function (req, res) {
   res.send("welcome, " + req.body.username);
 });
 
-app.post("/api/users", jsonParser, function(req, res) {});
+app.post("/api/users", jsonParser, function (req, res) {});
 
-app.post("/", function(req, res) {
+app.post("/", function (req, res) {
   console.dir(req.body);
   res.send(req.body.name);
 });
 
 // get请求
-app.get("/", function(req, res) {
+app.get("/", function (req, res) {
   console.dir(req.query);
   res.send("params: " + req.query.find);
 });
 
-app.get("/profile/:id", function(req, res) {
+app.get("/profile/:id", function (req, res) {
   console.dir(req.params);
   var resOnject = {
     name: req.params.id
